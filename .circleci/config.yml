@@ -39,9 +39,11 @@ jobs:
     docker:
       # Docker image here
       - image: circleci/node:13.8.0
+    working_directory: ~/project/frontend
     steps:
       # Checkout code from git
       - checkout
+      - run: cd frontend
       # Restore from cache
       - restore_cache:
           keys:
@@ -50,7 +52,6 @@ jobs:
       # Your job code here
       # Install Node.js packages
       - run: |
-          cd frontend
           npm install
       # Save dependencies to cache
       - save_cache:
@@ -60,7 +61,6 @@ jobs:
       # Run tests using Jest
       - run:
           command: |
-            cd frontend
             npm run test
 
   test-backend:
