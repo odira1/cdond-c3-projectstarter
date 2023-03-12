@@ -1,0 +1,40 @@
+- name: Copy backend files
+  copy:
+    src: /root/project/artifact.tar.gz
+    dest: artifact.tar.gz
+
+- shell: tar -xzvf artifact.tar.gz -C /tmp
+  become: true
+
+- name: "Install npm dependencies."
+  npm:
+    path: /tmp
+    state: present
+  become: true
+
+- name: "Stop the running app (if any)."
+  command: pm2 stop default || true
+  ignore_errors: true
+  become: true
+
+- name: "Start the app with pm2."
+  command: pm2 start npm -- start
+  args:
+    chdir: /tmp
+  become: true
+  environment:
+    TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION')}}"
+    TYPEORM_ENTITIES: "{{ lookup('env', 'TYPEORM_ENTITIES')}}"
+    TYPEORM_HOST: "{{ lookup('env', 'TYPEORM_HOST')}}"
+    TYPEORM_PORT: "5432"
+    TYPEORM_USERNAME: "{{ lookup('env', 'TYPEORM_USERNAME')}}"
+    TYPEORM_PASSWORD: "{{ lookup('env', 'TYPEORM_PASSWORD')}}"
+    TYPEORM_DATABASE: "{{ lookup('env', 'TYPEORM_DATABASE')}}"
+    TYPEORM_MIGRATIONS: "{{ lookup('env', 'TYPEORM_MIGRATIONS')}}"
+    TYPEORM_MIGRATIONS_DIR: "{{ lookup('env', 'TYPEORM_MIGRATIONS_DIR')}}"
+    TYPEORM_DRIVER_EXTRA: "{{ lookup('env', 'TYPEORM_DRIVER_EXTRA')}}"
+
+- name: Wait for app port 3030 before exiting
+  wait_for:
+    port: 3030
+    delay: 10
