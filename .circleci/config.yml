@@ -39,7 +39,7 @@ jobs:
     docker:
       # Docker image here
       - image: circleci/node:13.8.0
-    working_directory: ~/project/frontend
+    # working_directory: ~/project/frontend
     steps:
       # Checkout code from git
       - checkout
