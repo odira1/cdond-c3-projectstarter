@@ -43,25 +43,19 @@ jobs:
     steps:
       # Checkout code from git
       - checkout
-      - run: cd frontend
       # Restore from cache
       - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            - v1-dependencies-
+          keys: [frontend-test]
       # Your job code here
       # Install Node.js packages
       - run: |
+          cd frontend
           npm install
+          npm run test
       # Save dependencies to cache
       - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
-      # Run tests using Jest
-      - run:
-          command: |
-            npm run test
+          paths: [frontend/node_modules]
+          key: frontend-test
 
   test-backend:
     docker:
@@ -72,22 +66,17 @@ jobs:
       - checkout
       # Restore from cache
       - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            - v1-dependencies-
+          keys: [backend-test]
       # Your job code here
       # Install Node.js packages
       - run: |
           cd backend
           npm install
+          npm run test
       # Save dependencies to cache
       - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
-      # Run tests using Jest
-      - run: |
-          npm test
+          paths: [backend/node_modules]
+          key: backend-test
 
 workflows:
   default:
