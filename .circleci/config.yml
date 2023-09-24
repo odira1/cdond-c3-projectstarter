@@ -108,6 +108,7 @@ jobs:
           channel: C05TPQKC9NW
           event: fail
           template: basic_fail_1
+          debug: true
 
   scan-backend:
     docker:
