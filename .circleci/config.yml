@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  slack: circleci/slack@4.12.5
+
 jobs:
   build-frontend:
     docker:
@@ -95,12 +98,15 @@ jobs:
           ## npm install oauth-sign@^0.9.0
           npm audit fix --audit-level=critical --force
           ## If the "npm audit fix" command above could not fix all critical vulnerabilities, try “npm audit fix --force” again
-          npm audit fix --force
+          # npm audit fix --force
           npm audit --audit-level=critical
       # Save dependencies to cache
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-scan
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
 
   scan-backend:
     docker:
@@ -137,5 +143,6 @@ workflows:
           requires: [build-backend]
       - scan-frontend:
           requires: [build-frontend]
+          context: slack
       - scan-backend:
           requires: [build-backend]
