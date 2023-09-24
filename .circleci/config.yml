@@ -143,6 +143,6 @@ workflows:
           requires: [build-backend]
       - scan-frontend:
           requires: [build-frontend]
-          context: slack
+          context: Slack
       - scan-backend:
           requires: [build-backend]
