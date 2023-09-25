@@ -173,7 +173,7 @@ jobs:
             --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
             --tags project=udapeople
       - destroy-environment:
-          to: "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}"
+          workflow-id: "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}"
 
 workflows:
   default:
