@@ -3,6 +3,25 @@ version: 2.1
 orbs:
   slack: circleci/slack@4.12.5
 
+commands:
+  destroy-environment:
+    description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
+    parameters:
+      workflow-id:
+        default: ""
+        type: string
+        description: The unique ID of the workflow to identify the environment stacks.
+    steps:
+      - run:
+          name: Destroy environments
+          when: on_fail
+          command: |
+            # Add code to destroy the cloudformation stacks based on the provided workflow-id
+            # For example, you can use AWS CLI to delete stacks:
+            aws cloudformation delete-stack --stack-name <<parameters.workflow-id>>
+            # Handle errors and exit code if needed
+            exit 1
+
 jobs:
   build-frontend:
     docker:
@@ -134,6 +153,28 @@ jobs:
           paths: [backend/node_modules]
           key: backend-scan
 
+    deploy-infrastructure:
+      docker:
+        - image: amazon/aws-cli
+      steps:
+        - checkout
+        - run:
+            name: Install tar and gzip
+            command: |
+              # Update package list and install tar and gzip
+              apt-get update -y
+              apt-get install -y tar gzip
+        - run:
+            name: Deploy Infrastructure
+            command: |
+              aws cloudformation deploy \
+              --template-file .circleci/files/backend.yml \
+              --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
+              --tags project=udapeople
+        - destroy-environment:
+            to: "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}"
+
 workflows:
   default:
     jobs:
@@ -148,3 +189,8 @@ workflows:
           context: Slack
       - scan-backend:
           requires: [build-backend]
+      - deploy-infrastructure:
+          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+          filters:
+            branches:
+              only: [feature/CDOND-C3/update-ci-config]
