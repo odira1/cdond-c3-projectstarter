@@ -162,8 +162,8 @@ jobs:
           name: Install tar and gzip
           command: |
             # Update package list and install tar and gzip
-            apk update
-            apk add tar gzip
+            apt-get update -y
+            apt-get install -y tar gzip
       - run:
           name: Deploy Infrastructure
           command: |
