@@ -2,7 +2,6 @@ version: 2.1
 
 orbs:
   slack: circleci/slack@4.12.5
-  ansible-playbook: orbss/ansible-playbook@0.0.5
 
 commands:
   destroy-environment:
@@ -157,7 +156,7 @@ jobs:
   configure-infrastructure:
     docker:
       # Docker image here that supports Ansible
-      - image: amazon/aws-cli
+      - image: python:3.7-alpine3.11
     steps:
       # Checkout code from git
       - checkout
@@ -169,16 +168,13 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            yum update -y
-            yum install -y tar gzip
+            apk add --update ansible
+            apk add --no-cache aws-cli
       - run:
           name: Configure server
           command: |
             cd .circleci/ansible
             ansible-playbook -i inventory.txt configure-server.yml
-      - ansible-playbook:
-          playbook: .circleci/ansible/configure-server.yml
-          inventory: .circleci/ansible/inventory.txt
       # Here's where you will add some code to rollback on failure
       - destroy-environment:
           workflow-id: "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}"
