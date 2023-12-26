@@ -169,7 +169,8 @@ jobs:
           name: Install dependencies
           command: |
             apk add --update ansible
-            apk add --no-cache aws-cli
+            pip install --upgrade pip 
+            pip install awscli
       - run:
           name: Configure server
           command: |
