@@ -27,8 +27,8 @@ Resources:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: t2.micro
-      SecurityGroups:
-        - Ref: InstanceSecurityGroup
+      # SecurityGroups:
+      #   - Ref: InstanceSecurityGroup
       SecurityGroupIds:
         - !GetAtt InstanceSecurityGroup.GroupId
       KeyName: udapeople # If you use another key pair name, you should change this value to match.
