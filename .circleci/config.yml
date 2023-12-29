@@ -26,7 +26,7 @@ commands:
   revert-migrations:
     description: Revert the last migration
     parameters:
-      workflow_id:
+      workflow-id:
         type: string
     steps:
       - run:
@@ -256,8 +256,8 @@ jobs:
         # Here's where you will add some code to rollback on failure
       - destroy-environment:
           workflow-id: "${CIRCLE_WORKFLOW_ID:0:7}"
-      # - revert-migrations:
-      #     workflow-id: "${CIRCLE_WORKFLOW_ID:0:7}"
+      - revert-migrations:
+          workflow-id: "${CIRCLE_WORKFLOW_ID:0:7}"
 
   deploy-frontend:
     docker:
