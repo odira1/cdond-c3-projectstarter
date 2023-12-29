@@ -197,6 +197,7 @@ jobs:
           name: Configure server
           command: |
             cd .circleci/ansible
+            cat inventory.txt
             ansible-playbook -i inventory.txt configure-server.yml
       - destroy-environment:
           workflow-id: ${CIRCLE_WORKFLOW_ID:0:7}
@@ -212,41 +213,45 @@ jobs:
             # Update package list and install tar and gzip
             yum update -y
             yum install -y tar gzip
+      # - run:
+      #     name: Ensure backend exists
+      #     command: |
+      #       aws cloudformation deploy \
+      #       --template-file .circleci/files/backend.yml \
+      #       --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+      #       --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
+      #       --tags project=udapeople
+      # - run:
+      #     name: Ensure Frontend exists
+      #     command: |
+      #       aws cloudformation deploy \
+      #       --template-file .circleci/files/frontend.yml \
+      #       --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
+      #       --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
+      #       --tags project=udapeople
+      # - run:
+      #     name: Add back-end ip to ansible inventory
+      #     command: |
+      #       BACKEND_IP=$(aws cloudformation describe-stacks \
+      #         --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+      #         --query "Stacks[0].Outputs[?OutputKey=='BackendIP'].OutputValue" \
+      #         --output text)
+      #       echo $BACKEND_IP >> .circleci/ansible/inventory.txt
+      #       cat .circleci/ansible/inventory.txt
       - run:
-          name: Ensure backend exists
+          name: "cp to file"
           command: |
-            aws cloudformation deploy \
-            --template-file .circleci/files/backend.yml \
-            --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-            --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
-            --tags project=udapeople
-      - run:
-          name: Ensure Frontend exists
-          command: |
-            aws cloudformation deploy \
-            --template-file .circleci/files/frontend.yml \
-            --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
-            --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
-            --tags project=udapeople
-      - run:
-          name: Add back-end ip to ansible inventory
-          command: |
-            BACKEND_IP=$(aws cloudformation describe-stacks \
-              --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --query "Stacks[0].Outputs[?OutputKey=='BackendIP'].OutputValue" \
-              --output text)
-            echo $BACKEND_IP >> .circleci/ansible/inventory.txt
-            cat .circleci/ansible/inventory.txt
+            echo "172.1.1.0" >> circleci/ansible/inventory.txt
       - persist_to_workspace:
-          root: ~/
+          root: ~/.circleci
           paths:
-            - .circleci/ansible/inventory.txt
-      - destroy-environment:
-          workflow-id: ${CIRCLE_WORKFLOW_ID:0:7}
-      - slack/notify:
-          channel: C05TPQKC9NW
-          event: fail
-          template: basic_fail_1
+            - ansible/inventory.txt
+      # - destroy-environment:
+      #     workflow-id: ${CIRCLE_WORKFLOW_ID:0:7}
+      # - slack/notify:
+      #     channel: C05TPQKC9NW
+      #     event: fail
+      #     template: basic_fail_1
 
   run-migrations:
     docker:
