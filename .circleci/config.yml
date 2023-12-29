@@ -237,47 +237,10 @@ jobs:
               fi
         # Here's where you will add some code to rollback on failure
 
-deploy-frontend:
-  docker:
-    # Docker image here that supports AWS CLI
-  steps:
-    # Checkout code from git
-    - run:
-        name: Install dependencies
-        command: |
-          # your code here
-    - run:
-        name: Get backend url
-        command: |
-          # your code here
-          export API_URL="http://${BACKEND_IP}:3030"
-          echo "${API_URL}"
-    - run:
-        name: Deploy frontend objects
-        command: |
-          # your code here
-    # Here's where you will add some code to rollback on failure
-
-deploy-backend:
-  docker:
-    # Docker image here that supports Ansible
-    -
-  steps:
-    # Checkout code from git
-    # Add ssh keys with fingerprint
-    # attach workspace
-    - run:
-        name: Install dependencies
-        command: |
-          # your code here
-    - run:
-        name: Deploy backend
-        command: |
-          # your code here
-    # Here's where you will add some code to rollback on failure
-  smoke-test:
+  deploy-frontend:
     docker:
-      # Lightweight Docker image
+      # Docker image here that supports AWS CLI
+      - image: amazon/aws-cli
     steps:
       # Checkout code from git
       - run:
@@ -288,19 +251,59 @@ deploy-backend:
           name: Get backend url
           command: |
             # your code here
+            export API_URL="http://${BACKEND_IP}:3030"
+            echo "${API_URL}"
       - run:
-          name: Backend smoke test.
+          name: Deploy frontend objects
+          command: |
+            # your code here
+      # Here's where you will add some code to rollback on failure
+
+  deploy-backend:
+    docker:
+      # Docker image here that supports Ansible
+      - image: amazon/aws-cli
+    steps:
+      # Checkout code from git
+      # Add ssh keys with fingerprint
+      # attach workspace
+      - run:
+          name: Install dependencies
           command: |
             # your code here
       - run:
-          name: Frontend smoke test.
+          name: Deploy backend
           command: |
             # your code here
-    # Here's where you will add some code to rollback on failure
+      # Here's where you will add some code to rollback on failure
+    smoke-test:
+      docker:
+        # Lightweight Docker image
+        - image: alpine:latest
+      steps:
+        # Checkout code from git
+        - run:
+            name: Install dependencies
+            command: |
+              # your code here
+        - run:
+            name: Get backend url
+            command: |
+              # your code here
+        - run:
+            name: Backend smoke test.
+            command: |
+              # your code here
+        - run:
+            name: Frontend smoke test.
+            command: |
+              # your code here
+      # Here's where you will add some code to rollback on failure
 
   cloudfront-update:
     docker:
       # Docker image here that supports AWS CLI
+      - image: amazon/aws-cli
     steps:
       # Checkout code from git
       - run:
@@ -316,6 +319,7 @@ deploy-backend:
 cleanup:
   docker:
     # Docker image here
+    - image: amazon/aws-cli
   steps:
     # Checkout code from git
     - run:
