@@ -197,9 +197,9 @@ jobs:
           name: Configure server
           command: |
             cd project
-            ls -l
-            cat inventory.txt
-            ansible-playbook -i inventory.txt configure-server.yml
+            ls -al
+            cat .circleci/ansible/inventory.txt
+            ansible-playbook -i .circleci/ansible/inventory.txt configure-server.yml
 
   deploy-infrastructure:
     docker:
