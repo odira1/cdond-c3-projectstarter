@@ -197,6 +197,7 @@ jobs:
           name: Configure server
           command: |
             cd .circleci/ansible
+            cat inventory.txt
             ansible-playbook -i inventory.txt configure-server.yml
 
   deploy-infrastructure:
@@ -210,8 +211,6 @@ jobs:
             # Update package list and install tar and gzip
             yum update -y
             yum install -y tar gzip
-      - attach_workspace:
-          at: ~/project
       - run:
           name: Ensure backend exists
           command: |
