@@ -196,10 +196,11 @@ jobs:
       - run:
           name: Configure server
           command: |
-            cd project
-            ls -al
-            cat .circleci/ansible/inventory.txt
-            ansible-playbook -i .circleci/ansible/inventory.txt configure-server.yml
+            cp -f project/.circleci/ansible/inventory.txt .circleci/ansible/inventory.txt
+            cd .circleci/ansible
+            ansible-playbook -i inventory.txt configure-server.yml
+      - destroy-environment:
+          workflow-id: ${CIRCLE_WORKFLOW_ID:0:7}
 
   deploy-infrastructure:
     docker:
