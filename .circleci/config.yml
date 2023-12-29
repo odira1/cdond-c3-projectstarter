@@ -276,29 +276,29 @@ jobs:
           command: |
             # your code here
       # Here's where you will add some code to rollback on failure
-    smoke-test:
-      docker:
-        # Lightweight Docker image
-        - image: alpine:latest
-      steps:
-        # Checkout code from git
-        - run:
-            name: Install dependencies
-            command: |
-              # your code here
-        - run:
-            name: Get backend url
-            command: |
-              # your code here
-        - run:
-            name: Backend smoke test.
-            command: |
-              # your code here
-        - run:
-            name: Frontend smoke test.
-            command: |
-              # your code here
-      # Here's where you will add some code to rollback on failure
+  smoke-test:
+    docker:
+      # Lightweight Docker image
+      - image: alpine:latest
+    steps:
+      # Checkout code from git
+      - run:
+          name: Install dependencies
+          command: |
+            # your code here
+      - run:
+          name: Get backend url
+          command: |
+            # your code here
+      - run:
+          name: Backend smoke test.
+          command: |
+            # your code here
+      - run:
+          name: Frontend smoke test.
+          command: |
+            # your code here
+    # Here's where you will add some code to rollback on failure
 
   cloudfront-update:
     docker:
@@ -316,25 +316,25 @@ jobs:
             # your code here
       # Here's where you will add some code to rollback on failure
 
-cleanup:
-  docker:
-    # Docker image here
-    - image: amazon/aws-cli
-  steps:
-    # Checkout code from git
-    - run:
-        name: Get old stack workflow id
-        command: |
-          # your code here
-          export OldWorkflowID="the id here"
-          export STACKS=[] #put the list of stacks here
-    - run:
-        name: Remove old stacks and files
-        command: |
-          if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
-          then
+  cleanup:
+    docker:
+      # Docker image here
+      - image: amazon/aws-cli
+    steps:
+      # Checkout code from git
+      - run:
+          name: Get old stack workflow id
+          command: |
             # your code here
-          fi
+            export OldWorkflowID="the id here"
+            export STACKS=[] #put the list of stacks here
+      - run:
+          name: Remove old stacks and files
+          command: |
+            if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
+            then
+              # your code here
+            fi
 
 workflows:
   default:
