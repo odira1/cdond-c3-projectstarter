@@ -173,63 +173,79 @@ jobs:
   #         paths: [backend/node_modules]
   #         key: backend-scan
 
-  # configure-infrastructure:
-  #   docker:
-  #     # Docker image here that supports Ansible
-  #     - image: python:3.7-alpine3.11
-  #   steps:
-  #     # Checkout code from git
-  #     - checkout
-  #     # Add ssh keys with fingerprint
-  #     - add_ssh_keys:
-  #         fingerprints:
-  #           - "08:07:23:c6:40:13:5b:07:30:db:e4:28:fa:80:2d:e2"
-  #     # attach workspace
-  #     - run:
-  #         name: Install dependencies
-  #         command: |
-  #           apk add --update ansible
-  #           pip install --upgrade pip
-  #           pip install awscli
-  #     - run:
-  #         name: Configure server
-  #         command: |
-  #           cd .circleci/ansible
-  #           ansible-playbook -i inventory.txt configure-server.yml
+  configure-infrastructure:
+    docker:
+      # Docker image here that supports Ansible
+      - image: python:3.7-alpine3.11
+    steps:
+      # Checkout code from git
+      - checkout
+      # Add ssh keys with fingerprint
+      - add_ssh_keys:
+          fingerprints:
+            - "08:07:23:c6:40:13:5b:07:30:db:e4:28:fa:80:2d:e2"
+      # attach workspace
+      - persist_to_workspace:
+          root: .circleci/ansible
+          paths:
+            - inventory.txt
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --update ansible
+            pip install --upgrade pip
+            pip install awscli
+      - run:
+          name: Configure server
+          command: |
+            cd .circleci/ansible
+            ansible-playbook -i inventory.txt configure-server.yml
 
-  # deploy-infrastructure:
-  #   docker:
-  #     - image: amazon/aws-cli
-  #   steps:
-  #     - checkout
-  #     - run:
-  #         name: Install tar and gzip
-  #         command: |
-  #           # Update package list and install tar and gzip
-  #           yum update -y
-  #           yum install -y tar gzip
-  #     - run:
-  #         name: Ensure backend exists
-  #         command: |
-  #           aws cloudformation deploy \
-  #           --template-file .circleci/files/backend.yml \
-  #           --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-  #           --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
-  #           --tags project=udapeople
-  #     - run:
-  #         name: Ensure Frontend exists
-  #         command: |
-  #           aws cloudformation deploy \
-  #           --template-file .circleci/files/frontend.yml \
-  #           --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
-  #           --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
-  #           --tags project=udapeople
-  #     - destroy-environment:
-  #         workflow-id: ${CIRCLE_WORKFLOW_ID:0:7}
-  #     - slack/notify:
-  #         channel: C05TPQKC9NW
-  #         event: fail
-  #         template: basic_fail_1
+  deploy-infrastructure:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Install tar and gzip
+          command: |
+            # Update package list and install tar and gzip
+            yum update -y
+            yum install -y tar gzip
+      - run:
+          name: Ensure backend exists
+          command: |
+            aws cloudformation deploy \
+            --template-file .circleci/files/backend.yml \
+            --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+            --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
+            --tags project=udapeople
+      - run:
+          name: Ensure Frontend exists
+          command: |
+            aws cloudformation deploy \
+            --template-file .circleci/files/frontend.yml \
+            --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
+            --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
+            --tags project=udapeople
+      - run:
+          name: Add back-end ip to ansible inventory
+          command: |
+            BACKEND_IP=$(aws cloudformation describe-stacks \
+              --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --query "Stacks[0].Outputs[?OutputKey=='BackendIP'].OutputValue" \
+              --output text)
+            echo $BACKEND_IP >> .circleci/ansible/inventory.txt
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/.circleci/ansible/inventory.txt
+      - destroy-environment:
+          workflow-id: ${CIRCLE_WORKFLOW_ID:0:7}
+      - slack/notify:
+          channel: C05TPQKC9NW
+          event: fail
+          template: basic_fail_1
 
   run-migrations:
     docker:
@@ -266,6 +282,8 @@ jobs:
     steps:
       # Checkout code from git
       - checkout
+      - attach_workspace:
+          at: ~/project/
       - run:
           name: Install dependencies
           command: |
@@ -274,7 +292,7 @@ jobs:
       - run:
           name: Get backend url
           command: |
-            export BACKEND_IP=$(aws ec2 describe-instances --filters "Name=instance-state-name,Values=running" "Name=key-name,Values=udapeople"  --query 'Reservations[*].Instances[*].PublicIpAddress' --output text --region ca-central-1)
+            export BACKEND_IP=$(cat ~/project/.circleci/ansible/inventory.txt | grep '^\[web\]' -A 1 | tail -n 1 | xargs)
             export API_URL="http://${BACKEND_IP}:3030"
             echo "API_URL = ${API_URL}"
             echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
@@ -303,6 +321,8 @@ jobs:
           fingerprints:
             - "08:07:23:c6:40:13:5b:07:30:db:e4:28:fa:80:2d:e2"
       # attach workspace
+      - attach_workspace:
+          at: ~/project/
       - run:
           name: Install dependencies
           command: |
@@ -341,7 +361,7 @@ jobs:
           name: Get backend url
           command: |
             export BACKEND_IP=$(aws ec2 describe-instances --filters "Name=instance-state-name,Values=running" "Name=key-name,Values=udapeople"  --query 'Reservations[*].Instances[*].PublicIpAddress' --output text --region ca-central-1)
-            echo ${BACKEND_IP}
+            echo "Backend IP: ${BACKEND_IP}"
       - run:
           name: Backend smoke test.
           command: |

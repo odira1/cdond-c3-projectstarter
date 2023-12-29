@@ -38,3 +38,12 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub backend-${ID}
+
+Outputs:
+  InstanceId:
+    Description: Instance ID of the created EC2 instance.
+    Value: !Ref EC2Instance
+
+  BackendIP:
+    Description: Public IP address of the created EC2 instance.
+    Value: !GetAtt EC2Instance.PublicIp
