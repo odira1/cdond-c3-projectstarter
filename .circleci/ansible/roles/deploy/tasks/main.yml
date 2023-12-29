@@ -1,32 +1,21 @@
----
-- name: "install python"
-  become: yes
-  apt:
-    name: ["python3", "python3-pip"]
-    state: latest
-    update_cache: yes
+- name: "extract zipped artifact."
+  unarchive:
+    src: artifact.tar.gz
+    dest: /tmp
+    remote_src: yes
 
-- name: "update apt packages."
-  apt:
-    update_cache: yes
-  become: yes
-
-- name: "upgrade packages"
-  become: yes
-  apt:
-    upgrade: yes
-
-- name: "install dependencies."
-  become: yes
-  apt:
-    name: ["nodejs", "npm"]
-    state: latest
-    update_cache: yes
-
-- name: "install pm2"
-  become: yes
+- name: "Install npm dependencies."
   npm:
-    name: pm2
-    global: yes
-    production: yes
+    path: /tmp
     state: present
+  become: true
+
+- name: "Stop the app with pm2."
+  command: pm2 stop default
+  become: true
+
+- name: "Start the app with pm2."
+  command: pm2 start npm -- start
+  args:
+    chdir: /tmp
+  become: true
