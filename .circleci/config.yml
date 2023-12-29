@@ -206,14 +206,14 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
-      - attach_workspace:
-          at: ~/project
       - run:
           name: Install tar and gzip
           command: |
             # Update package list and install tar and gzip
             yum update -y
             yum install -y tar gzip
+      - attach_workspace:
+          at: ~/project
       - run:
           name: Ensure backend exists
           command: |
