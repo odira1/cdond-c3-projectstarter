@@ -241,7 +241,7 @@ jobs:
       - run:
           name: "cp to file"
           command: |
-            echo "172.1.1.0" >> circleci/ansible/inventory.txt
+            echo "172.1.1.0" >> .circleci/ansible/inventory.txt
       - persist_to_workspace:
           root: ~/.circleci
           paths:
