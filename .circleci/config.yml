@@ -269,7 +269,6 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            curl -sL https://rpm.nodesource.com/setup_10.x | bash -
             yum update -y
             yum install -y tar gzip nodejs
       - run:
@@ -307,7 +306,6 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            curl -sL https://rpm.nodesource.com/setup_10.x | bash -
             apk add --update ansible nodejs tar gzip
             pip install --upgrade pip
             pip install awscli
