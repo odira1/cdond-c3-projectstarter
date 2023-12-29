@@ -186,9 +186,9 @@ jobs:
             - "08:07:23:c6:40:13:5b:07:30:db:e4:28:fa:80:2d:e2"
       # attach workspace
       - persist_to_workspace:
-          root: .circleci/ansible
+          root: ~/project
           paths:
-            - inventory.txt
+            - .circleci/ansible/inventory.txt
       - run:
           name: Install dependencies
           command: |
@@ -206,6 +206,8 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
+      - attach_workspace:
+          at: ~/project
       - run:
           name: Install tar and gzip
           command: |
@@ -456,15 +458,15 @@ workflows:
       #     context: Slack
       # - scan-backend:
       #     requires: [build-backend]
-      # - deploy-infrastructure:
-      #     requires: [test-frontend, test-backend, scan-frontend, scan-backend]
-      # - configure-infrastructure:
-      #     requires: [deploy-infrastructure]
-      #     filters:
-      #       branches:
-      #         only: [feature/CDOND-C3/update-ci-config]
-      - run-migrations
-        # requires: [configure-infrastructure]
+      - deploy-infrastructure
+        # requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
+          filters:
+            branches:
+              only: [feature/CDOND-C3/update-ci-config]
+      - run-migrations:
+          requires: [configure-infrastructure]
       - deploy-frontend:
           requires: [run-migrations]
       - deploy-backend:
