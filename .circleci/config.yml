@@ -270,7 +270,7 @@ jobs:
           name: Install dependencies
           command: |
             yum update -y
-            yum install -y tar gzip nodejs
+            yum install -y tar gzip nodejs npm
       - run:
           name: Get backend url
           command: |
@@ -306,7 +306,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apk add --update ansible nodejs tar gzip
+            apk add --update ansible nodejs npm tar gzip
             pip install --upgrade pip
             pip install awscli
       - run:
@@ -341,6 +341,7 @@ jobs:
           name: Get backend url
           command: |
             export BACKEND_IP=$(aws ec2 describe-instances --filters "Name=instance-state-name,Values=running" "Name=key-name,Values=udapeople"  --query 'Reservations[*].Instances[*].PublicIpAddress' --output text --region ca-central-1)
+            echo ${BACKEND_IP}
       - run:
           name: Backend smoke test.
           command: |
