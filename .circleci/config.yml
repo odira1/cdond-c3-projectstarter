@@ -323,14 +323,14 @@ jobs:
           fingerprints:
             - "08:07:23:c6:40:13:5b:07:30:db:e4:28:fa:80:2d:e2"
       # attach workspace
-      - attach_workspace:
-          at: ~/project/
       - run:
           name: Install dependencies
           command: |
             apk add --update ansible nodejs npm tar gzip
             pip install --upgrade pip
             pip install awscli
+      - attach_workspace:
+          at: ~/project
       - run:
           name: Deploy backend
           command: |
