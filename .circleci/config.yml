@@ -242,10 +242,11 @@ jobs:
           name: "cp to file"
           command: |
             echo "172.1.1.0" >> .circleci/ansible/inventory.txt
+            ls -al
       - persist_to_workspace:
-          root: ~/.circleci
+          root: ~/project
           paths:
-            - ansible/inventory.txt
+            - .circleci/ansible/inventory.txt
       # - destroy-environment:
       #     workflow-id: ${CIRCLE_WORKFLOW_ID:0:7}
       # - slack/notify:
