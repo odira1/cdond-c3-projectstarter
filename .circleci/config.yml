@@ -18,8 +18,8 @@ commands:
           command: |
             # Add code to destroy the cloudformation stacks based on the provided workflow-id
             # For example, you can use AWS CLI to delete stacks:
-            aws cloudformation delete-stack --stack-name backend-<<parameters.workflow-id>>
-            aws cloudformation delete-stack --stack-name frontend-<<parameters.workflow-id>>
+            aws cloudformation delete-stack --stack-name udapeople-backend-<<parameters.workflow-id>>
+            aws cloudformation delete-stack --stack-name udapeople-frontend-<<parameters.workflow-id>>
             # Handle errors and exit code if needed
             exit 1
 
