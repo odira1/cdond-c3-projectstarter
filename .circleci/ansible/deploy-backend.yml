@@ -9,36 +9,33 @@
     - ansible_stdout_callback: yaml
 
   pre_tasks:
+    - name: "upgrade packages"
+      become: yes
+      apt:
+        upgrade: yes
+      register: result
+      until: result is success
+      retries: 5
+      delay: 5
+      ignore_errors: yes
+
     - name: "install python"
       become: yes
       apt:
         name: ["python3", "python3-pip"]
         state: latest
-        # update_cache: yes
-
-    # - name: "update apt packages."
-    #   apt:
-    #     update_cache: yes
-    #   become: yes
-
-    - name: "upgrade packages"
-      become: yes
-      apt:
-        upgrade: yes
 
     - name: "install tar"
       become: yes
       apt:
         name: ["tar"]
         state: latest
-        # update_cache: yes
 
     - name: "install dependencies."
       become: yes
       apt:
         name: ["nodejs", "npm"]
         state: latest
-        # update_cache: yes
 
     - name: "install pm2"
       become: yes
