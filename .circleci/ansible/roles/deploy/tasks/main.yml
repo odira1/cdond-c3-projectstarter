@@ -9,8 +9,8 @@
     dest: /tmp
     remote_src: yes
     extra_opts:
-      - -zxf
-      - --strip-components=1
+      - "-zxf"
+      - "--strip-components=1"
   become: true
 
 - name: "Install npm dependencies."
