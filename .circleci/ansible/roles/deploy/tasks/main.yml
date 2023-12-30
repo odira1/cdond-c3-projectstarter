@@ -9,7 +9,7 @@
     dest: /tmp
     remote_src: yes
     extra_opts:
-      - "-zxf"
+      - "-xzvf"
       - "--strip-components=1"
   become: true
 
