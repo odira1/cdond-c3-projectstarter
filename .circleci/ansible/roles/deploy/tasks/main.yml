@@ -8,6 +8,9 @@
     src: artifact.tar.gz
     dest: /tmp
     remote_src: yes
+    extra_opts:
+      - -zxf
+      - --strip-components
   become: true
 
 - name: "Install npm dependencies."
