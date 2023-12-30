@@ -332,8 +332,8 @@ jobs:
             apk add --update ansible nodejs npm tar gzip
             pip install --upgrade pip
             pip install awscli
-      # - attach_workspace:
-      #     at: ~/project
+      - attach_workspace:
+          at: ~/project
       - run:
           name: Deploy backend
           command: |
