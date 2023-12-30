@@ -1,6 +1,11 @@
+- name: Copy backend files
+  template:
+    src: /root/project/artifact.tar.gz
+    dest: artifact.tar.gz
+
 - name: "extract zipped artifact."
   unarchive:
-    src: /root/project/artifact.tar.gz
+    src: artifact.tar.gz
     dest: /tmp
     remote_src: yes
   become: true
