@@ -19,23 +19,20 @@
       delay: 5
       ignore_errors: yes
 
-    - name: "install python"
-      become: yes
+    - name: General | Instalacion de paquetes requeridos.
       apt:
-        name: ["python3", "python3-pip"]
+        name: "{{ packages }}"
         state: latest
-
-    - name: "install tar"
+        update_cache: yes
+        force_apt_get: yes
       become: yes
-      apt:
-        name: ["tar"]
-        state: latest
-
-    - name: "install dependencies."
-      become: yes
-      apt:
-        name: ["nodejs", "npm"]
-        state: latest
+      vars:
+        packages:
+          - python3
+          - python3-pip
+          - tar
+          - nodejs
+          - npm
 
     - name: "install pm2"
       become: yes
