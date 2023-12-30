@@ -1,8 +1,9 @@
 - name: "extract zipped artifact."
   unarchive:
-    src: "/root/project/artifact.tar.gz"
+    src: /root/project/artifact.tar.gz
     dest: /tmp
     remote_src: yes
+  become: true
 
 - name: "Install npm dependencies."
   npm:
