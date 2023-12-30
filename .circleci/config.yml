@@ -284,13 +284,13 @@ jobs:
     steps:
       # Checkout code from git
       - checkout
-      - attach_workspace:
-          at: ~/
       - run:
           name: Install dependencies
           command: |
             yum update -y
             yum install -y tar gzip nodejs npm
+      - attach_workspace:
+          at: ~/
       - run:
           name: Get backend url
           command: |
