@@ -16,6 +16,13 @@
         state: latest
         update_cache: yes
 
+    - name: "install tar"
+      become: yes
+      apt:
+        name: ["tar"]
+        state: latest
+        update_cache: yes
+
     - name: "update apt packages."
       apt:
         update_cache: yes
