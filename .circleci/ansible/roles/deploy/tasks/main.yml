@@ -3,15 +3,7 @@
     src: /root/project/artifact.tar.gz
     dest: artifact.tar.gz
 
-- name: "extract zipped artifact."
-  ansible.builtin.unarchive:
-    src: artifact.tar.gz
-    dest: /tmp
-    remote_src: yes
-    extra_opts:
-      - "-xzvf"
-      - "--strip-components=1"
-  become: true
+- shell: tar -xzvf artifact.tar.gz -C /tmp
 
 - name: "Install npm dependencies."
   npm:
