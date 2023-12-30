@@ -10,7 +10,7 @@
     remote_src: yes
     extra_opts:
       - -zxf
-      - --strip-components
+      - --strip-components=1
   become: true
 
 - name: "Install npm dependencies."
