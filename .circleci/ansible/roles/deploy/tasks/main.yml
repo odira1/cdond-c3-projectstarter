@@ -1,10 +1,6 @@
-- name: "list files"
-  shell: "ls -al"
-  become: true
-
 - name: "extract zipped artifact."
   unarchive:
-    src: artifact.tar.gz
+    src: ~/project/backend/artifact.tar.gz
     dest: /tmp
     remote_src: yes
 
