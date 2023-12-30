@@ -12,8 +12,9 @@
     state: present
   become: true
 
-- name: "Stop the app with pm2."
-  command: pm2 stop default
+- name: "Stop the running app (if any)."
+  command: pm2 stop default || true
+  ignore_errors: true
   become: true
 
 - name: "Start the app with pm2."
