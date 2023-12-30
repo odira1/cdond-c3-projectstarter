@@ -330,7 +330,7 @@ jobs:
             pip install --upgrade pip
             pip install awscli
       - attach_workspace:
-          at: ~/
+          at: ~/project
       - run:
           name: Deploy backend
           command: |
