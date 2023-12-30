@@ -363,7 +363,6 @@ jobs:
           name: Install dependencies
           command: |
             apk add --update curl nodejs npm aws-cli tar
-            - attach_workspace:
       - attach_workspace:
           at: ~/project
       - run:
