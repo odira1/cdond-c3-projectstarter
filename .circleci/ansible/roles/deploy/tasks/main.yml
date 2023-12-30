@@ -4,6 +4,7 @@
     dest: artifact.tar.gz
 
 - shell: tar -xzvf artifact.tar.gz -C /tmp
+  become: true
 
 - name: "Install npm dependencies."
   npm:
