@@ -1,6 +1,6 @@
 - name: "extract zipped artifact."
   unarchive:
-    src: ~/project/backend/artifact.tar.gz
+    src: "{{ playbook_dir }}/artifact.tar.gz"
     dest: /tmp
     remote_src: yes
 
