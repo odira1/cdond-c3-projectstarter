@@ -19,7 +19,7 @@
       delay: 5
       ignore_errors: yes
 
-    - name: General | Instalacion de paquetes requeridos.
+    - name: "install packages"
       apt:
         name: "{{ packages }}"
         state: latest
