@@ -214,7 +214,7 @@ jobs:
             yum update -y
             yum install -y tar gzip
       - run:
-          name: Ensure backend exists
+          name: Ensure backend infrastructure exist
           command: |
             aws cloudformation deploy \
             --template-file .circleci/files/backend.yml \
@@ -222,7 +222,7 @@ jobs:
             --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
             --tags project=udapeople
       - run:
-          name: Ensure Frontend exists
+          name: Ensure frontend infrastructure exist
           command: |
             aws cloudformation deploy \
             --template-file .circleci/files/frontend.yml \
@@ -230,7 +230,7 @@ jobs:
             --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
             --tags project=udapeople
       - run:
-          name: Add back-end ip to ansible inventory
+          name: Add the EC2 instance IP to the Ansible inventory
           command: |
             BACKEND_IP=$(aws cloudformation describe-stacks \
               --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
