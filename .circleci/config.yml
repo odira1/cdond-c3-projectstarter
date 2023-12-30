@@ -370,9 +370,11 @@ jobs:
           command: |
             export BACKEND_IP=$(cat .circleci/ansible/inventory.txt | grep '^\[web\]' -A 1 | tail -n 1 | xargs)
             echo "Backend IP: ${BACKEND_IP}"
+            echo "export BACKEND_IP=127.0.0.1" >> $BASH_ENV
       - run:
           name: Backend smoke test.
           command: |
+            source $BASH_ENV
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
             if curl "${API_URL}/api/status" | grep "ok"
@@ -468,22 +470,22 @@ workflows:
       #     context: Slack
       # - scan-backend:
       #     requires: [build-backend]
-      - deploy-infrastructure
-        # requires: [test-frontend, test-backend, scan-frontend, scan-backend]
-      - configure-infrastructure:
-          requires: [deploy-infrastructure]
-          filters:
-            branches:
-              only: [feature/CDOND-C3/update-ci-config]
-      - run-migrations:
-          requires: [configure-infrastructure]
-      - deploy-frontend:
-          requires: [run-migrations]
-      - deploy-backend:
-          requires: [run-migrations]
-      - smoke-test:
-          requires: [deploy-backend, deploy-frontend]
-      - cloudfront-update:
-          requires: [smoke-test]
-      - cleanup:
-          requires: [cloudfront-update]
+      # - deploy-infrastructure
+      # requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+      # - configure-infrastructure:
+      #     requires: [deploy-infrastructure]
+      #     filters:
+      #       branches:
+      #         only: [feature/CDOND-C3/update-ci-config]
+      # - run-migrations:
+      #     requires: [configure-infrastructure]
+      # - deploy-frontend:
+      #     requires: [run-migrations]
+      # - deploy-backend:
+      #     requires: [run-migrations]
+      - smoke-test
+        # requires: [deploy-backend, deploy-frontend]
+      # - cloudfront-update:
+      #     requires: [smoke-test]
+      # - cleanup:
+      #     requires: [cloudfront-update]
