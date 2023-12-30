@@ -362,11 +362,14 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apk add --update curl nodejs npm aws-cli
+            apk add --update curl nodejs npm aws-cli tar
+            - attach_workspace:
+      - attach_workspace:
+          at: ~/project
       - run:
           name: Get backend url
           command: |
-            export BACKEND_IP=$(aws ec2 describe-instances --filters "Name=instance-state-name,Values=running" "Name=key-name,Values=udapeople"  --query 'Reservations[*].Instances[*].PublicIpAddress' --output text --region ca-central-1)
+            export BACKEND_IP=$(cat .circleci/ansible/inventory.txt | grep '^\[web\]' -A 1 | tail -n 1 | xargs)
             echo "Backend IP: ${BACKEND_IP}"
       - run:
           name: Backend smoke test.
