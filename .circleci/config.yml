@@ -18,10 +18,9 @@ commands:
           command: |
             # Add code to destroy the cloudformation stacks based on the provided workflow-id
             # For example, you can use AWS CLI to delete stacks:
+            aws s3 rm s3://udapeople-<<parameters.workflow-id>> --recursive --force || true
             aws cloudformation delete-stack --stack-name udapeople-backend-<<parameters.workflow-id>>
             aws cloudformation delete-stack --stack-name udapeople-frontend-<<parameters.workflow-id>>
-            # Handle errors and exit code if needed
-            exit 1
 
   revert-migrations:
     description: Revert the last migration
@@ -212,7 +211,7 @@ jobs:
           command: |
             # Update package list and install tar and gzip
             yum update -y
-            yum install -y tar gzip
+            yum install -y tar gzip curl
       - run:
           name: Ensure backend infrastructure exist
           command: |
@@ -329,7 +328,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apk add --update ansible nodejs npm tar gzip
+            apk add --update ansible nodejs npm tar gzip curl
             pip install --upgrade pip
             pip install awscli
       - attach_workspace:

@@ -34,9 +34,7 @@
     TYPEORM_MIGRATIONS_DIR: "{{ lookup('env', 'TYPEORM_MIGRATIONS_DIR')}}"
     TYPEORM_DRIVER_EXTRA: "{{ lookup('env', 'TYPEORM_DRIVER_EXTRA')}}"
 
-- name: Check if PM2 process is running
-  shell: pm2 list | grep npm
-  register: pm2_status
-  until: pm2_status.stdout is search('npm')
-  retries: 30
-  delay: 10
+- name: Wait for app port 3030 before exiting
+  wait_for:
+    port: 3030
+    delay: 10
