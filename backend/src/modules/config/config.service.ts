@@ -55,8 +55,9 @@ export class ConfigService {
       // AUTH0_DOMAIN: Joi.string().required(),
       // AUTH0_AUDIENCE: Joi.string().required(),
     }).unknown();
-    const { error, value: validatedEnvConfig } = envVarsSchema.validate(envConfig);
-
+    const { error, value: validatedEnvConfig } = envVarsSchema.validate(
+      envConfig,
+    );
 
     if (error) {
       throw new Error(`Config validation error: ${error.message}`);
@@ -106,8 +107,15 @@ export class ConfigService {
       entities: [this.envConfig.TYPEORM_ENTITIES],
       // entities: [Product, Order, Employee],
       logging: this.envConfig.TYPEORM_LOGGING === 'true',
-      extra: { max: 4, min: 1 },
+      extra: {
+        max: 4,
+        min: 1,
+        ssl: {
+          rejectUnauthorized: false,
+        },
+      },
       synchronize: false,
+      ssl: true,
     };
   }
 
