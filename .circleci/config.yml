@@ -42,135 +42,135 @@ commands:
             fi
 
 jobs:
-  # build-frontend:
-  #   docker:
-  #     - image: circleci/node:13.8.0
-  #   steps:
-  #     - checkout
-  #     - restore_cache:
-  #         keys: [frontend-build]
-  #     - run:
-  #         name: Build front-end
-  #         command: |
-  #           cd frontend
-  #           npm install
-  #           npm run build
-  #     - save_cache:
-  #         paths: [frontend/node_modules]
-  #         key: frontend-build
+  build-frontend:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys: [frontend-build]
+      - run:
+          name: Build front-end
+          command: |
+            cd frontend
+            npm install
+            npm run build
+      - save_cache:
+          paths: [frontend/node_modules]
+          key: frontend-build
 
-  # build-backend:
-  #   docker:
-  #     - image: circleci/node:13.8.0
-  #   steps:
-  #     - checkout
-  #     - restore_cache:
-  #         keys: [backend-build]
-  #     - run:
-  #         name: Back-end build
-  #         command: |
-  #           cd backend
-  #           npm install
-  #           npm run build
-  #     - save_cache:
-  #         paths: [backend/node_modules]
-  #         key: backend-build
+  build-backend:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys: [backend-build]
+      - run:
+          name: Back-end build
+          command: |
+            cd backend
+            npm install
+            npm run build
+      - save_cache:
+          paths: [backend/node_modules]
+          key: backend-build
 
-  # test-frontend:
-  #   docker:
-  #     # Docker image here
-  #     - image: circleci/node:13.8.0
-  #   # working_directory: ~/project/frontend
-  #   steps:
-  #     # Checkout code from git
-  #     - checkout
-  #     # Restore from cache
-  #     - restore_cache:
-  #         keys: [frontend-test]
-  #     # Your job code here
-  #     # Install Node.js packages
-  #     - run: |
-  #         cd frontend
-  #         npm install
-  #         npm run test
-  #     # Save dependencies to cache
-  #     - save_cache:
-  #         paths: [frontend/node_modules]
-  #         key: frontend-test
+  test-frontend:
+    docker:
+      # Docker image here
+      - image: circleci/node:13.8.0
+    # working_directory: ~/project/frontend
+    steps:
+      # Checkout code from git
+      - checkout
+      # Restore from cache
+      - restore_cache:
+          keys: [frontend-test]
+      # Your job code here
+      # Install Node.js packages
+      - run: |
+          cd frontend
+          npm install
+          npm run test
+      # Save dependencies to cache
+      - save_cache:
+          paths: [frontend/node_modules]
+          key: frontend-test
 
-  # test-backend:
-  #   docker:
-  #     # Docker image here
-  #     - image: circleci/node:13.8.0
-  #   steps:
-  #     # Checkout code from git
-  #     - checkout
-  #     # Restore from cache
-  #     - restore_cache:
-  #         keys: [backend-test]
-  #     # Your job code here
-  #     # Install Node.js packages
-  #     - run: |
-  #         cd backend
-  #         npm install
-  #         npm run test
-  #     # Save dependencies to cache
-  #     - save_cache:
-  #         paths: [backend/node_modules]
-  #         key: backend-test
+  test-backend:
+    docker:
+      # Docker image here
+      - image: circleci/node:13.8.0
+    steps:
+      # Checkout code from git
+      - checkout
+      # Restore from cache
+      - restore_cache:
+          keys: [backend-test]
+      # Your job code here
+      # Install Node.js packages
+      - run: |
+          cd backend
+          npm install
+          npm run test
+      # Save dependencies to cache
+      - save_cache:
+          paths: [backend/node_modules]
+          key: backend-test
 
-  # scan-frontend:
-  #   docker:
-  #     # Docker image here
-  #     - image: circleci/node:13.8.0
-  #   steps:
-  #     # Checkout code from git
-  #     - checkout
-  #     # Restore from cache
-  #     - restore_cache:
-  #         keys: [frontend-scan]
-  #     # Your job code here
-  #     - run: |
-  #         cd frontend
-  #         npm install
-  #         ## npm install oauth-sign@^0.9.0
-  #         npm audit fix --audit-level=critical --force
-  #         ## If the "npm audit fix" command above could not fix all critical vulnerabilities, try “npm audit fix --force” again
-  #         npm audit fix --force
-  #         npm audit --audit-level=critical
-  #     # Save dependencies to cache
-  #     - save_cache:
-  #         paths: [frontend/node_modules]
-  #         key: frontend-scan
-  #     - slack/notify:
-  #         channel: C05TPQKC9NW
-  #         event: fail
-  #         template: basic_fail_1
-  #         debug: true
+  scan-frontend:
+    docker:
+      # Docker image here
+      - image: circleci/node:13.8.0
+    steps:
+      # Checkout code from git
+      - checkout
+      # Restore from cache
+      - restore_cache:
+          keys: [frontend-scan]
+      # Your job code here
+      - run: |
+          cd frontend
+          npm install
+          ## npm install oauth-sign@^0.9.0
+          npm audit fix --audit-level=critical --force
+          ## If the "npm audit fix" command above could not fix all critical vulnerabilities, try “npm audit fix --force” again
+          npm audit fix --force
+          npm audit --audit-level=critical
+      # Save dependencies to cache
+      - save_cache:
+          paths: [frontend/node_modules]
+          key: frontend-scan
+      - slack/notify:
+          channel: C05TPQKC9NW
+          event: fail
+          template: basic_fail_1
+          debug: true
 
-  # scan-backend:
-  #   docker:
-  #     # Docker image here
-  #     - image: circleci/node:13.8.0
-  #   steps:
-  #     # Checkout code from git
-  #     - checkout
-  #     # Restore from cache
-  #     - restore_cache:
-  #         keys: [backend-scan]
-  #     # Your job code here
-  #     - run: |
-  #         cd backend
-  #         npm install
-  #         ## npm install oauth-sign@^0.9.0
-  #         npm audit fix --audit-level=critical --force
-  #         ## If the "npm audit fix" command above could not fix all critical vulnerabilities, try “npm audit fix --force” again
-  #         npm audit fix --force
-  #         npm audit --audit-level=critical
-  #     # Save dependencies to cache
-  #     - save_cache:
-  #         paths: [backend/node_modules]
-  #         key: backend-scan
+  scan-backend:
+    docker:
+      # Docker image here
+      - image: circleci/node:13.8.0
+    steps:
+      # Checkout code from git
+      - checkout
+      # Restore from cache
+      - restore_cache:
+          keys: [backend-scan]
+      # Your job code here
+      - run: |
+          cd backend
+          npm install
+          ## npm install oauth-sign@^0.9.0
+          npm audit fix --audit-level=critical --force
+          ## If the "npm audit fix" command above could not fix all critical vulnerabilities, try “npm audit fix --force” again
+          npm audit fix --force
+          npm audit --audit-level=critical
+      # Save dependencies to cache
+      - save_cache:
+          paths: [backend/node_modules]
+          key: backend-scan
 
   configure-infrastructure:
     docker:
@@ -460,19 +460,19 @@ jobs:
 workflows:
   default:
     jobs:
-      # - build-frontend
-      # - build-backend
-      # - test-frontend:
-      #     requires: [build-frontend]
-      # - test-backend:
-      #     requires: [build-backend]
-      # - scan-frontend:
-      #     requires: [build-frontend]
-      #     context: Slack
-      # - scan-backend:
-      #     requires: [build-backend]
-      - deploy-infrastructure
-      # requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+      - build-frontend
+      - build-backend
+      - test-frontend:
+          requires: [build-frontend]
+      - test-backend:
+          requires: [build-backend]
+      - scan-frontend:
+          requires: [build-frontend]
+          context: Slack
+      - scan-backend:
+          requires: [build-backend]
+      - deploy-infrastructure:
+          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
       - configure-infrastructure:
           requires: [deploy-infrastructure]
           filters:
