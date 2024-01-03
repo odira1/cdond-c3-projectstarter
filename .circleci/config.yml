@@ -254,6 +254,8 @@ jobs:
     steps:
       # Checkout code from git
       - checkout
+      - attach_workspace:
+          at: ~/project
       - run:
           name: Run migrations
           command: |
@@ -267,6 +269,10 @@ jobs:
               curl https://kvdb.io/LVb4g3gSb4FkeNABpVpc8B/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi
         # Here's where you will add some code to rollback on failure
+      - persist_to_workspace:
+          root: ~/project
+          paths:
+            - backend/migrations_dump.txt
       - destroy-environment:
           workflow-id: "${CIRCLE_WORKFLOW_ID:0:7}"
       - revert-migrations:
